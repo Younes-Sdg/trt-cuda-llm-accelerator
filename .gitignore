@@ -1,5 +1,4 @@
 trt-cuda-env/
 __pycache__/
 src/saved_models/
-run_commands.txt
 model.cache
