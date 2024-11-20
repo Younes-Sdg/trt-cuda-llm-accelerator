@@ -1,0 +1,34 @@
+Run the following commands : 
+
+# Convert the original GPT-2 model to FP16 precision with int8 quantization.
+
+
+python src/optimizations/convert_checkpoint.py --model_dir src/saved_models/gpt2 \
+        --dtype float16 \
+        --weight_only_precision int8 \
+        --output_dir src/saved_models/gpt2_trt_f16_w_int8
+
+
+
+
+# Build a TensorRT engine using the optimized FP16 model checkpoint.
+# The output is stored for single GPU execution.
+
+
+trtllm-build --checkpoint_dir src/saved_models/gpt2_trt_f16_w_int8 \
+        --output_dir src/saved_models/gpt2_trt_f16_w_int8/trt_engines/fp16/1-gpu
+
+
+
+# Run inference with the TensorRT engine using GPT2 tokenizer.
+# Specify the output sequence length and the number of sequences to generate.
+
+
+python src/optimizations/run.py \
+  --engine_dir src/saved_models/gpt2_trt_f16_w_int8/trt_engines/fp16/1-gpu \
+  --tokenizer_dir src/saved_models/gpt2 \
+  --max_output_len 8 \
+  --num_return_sequences 1
+
+
+
